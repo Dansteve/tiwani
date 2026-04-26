@@ -18,8 +18,7 @@ const WAITLIST_ENDPOINT = "REDACTED_WAITLIST_ENDPOINT";
 
 export async function submitToWaitlist(data: {
   email: string;
-  interests: string[];
-  confirm: boolean;
+  roles: string[];
 }) {
   if (!WAITLIST_ENDPOINT) {
     console.warn("WAITLIST_ENDPOINT is not set. Data is only being logged to console.");
@@ -34,11 +33,10 @@ export async function submitToWaitlist(data: {
     },
     body: JSON.stringify({
       Email: data.email,
-      Interest_EarlyAccess: data.interests.includes("I would be interested in early access to a tool like this") ? "Yes" : "No",
-      Interest_UseWhenAvailable: data.interests.includes("I would be open to using this if it becomes available") ? "Yes" : "No",
-      Interest_ShareFeedback: data.interests.includes("I would be happy to share feedback as it develops") ? "Yes" : "No",
-      Interest_ContactedForInput: data.interests.includes("I would be open to being contacted for further input") ? "Yes" : "No",
-      Confirmed: data.confirm ? "Yes" : "No",
+      Role_Child_AdditionalNeeds: data.roles.includes("A child or young person with additional needs") ? "Yes" : "No",
+      Role_Older_Adult: data.roles.includes("An older adult") ? "Yes" : "No",
+      Role_LongTerm_Condition: data.roles.includes("Someone with a long-term condition") ? "Yes" : "No",
+      Role_Professional: data.roles.includes("I work with caregiving families professionally") ? "Yes" : "No",
       Created: "x-sheetmonkey-current-date-time", 
     }),
   });

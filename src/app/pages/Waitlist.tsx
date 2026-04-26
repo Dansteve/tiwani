@@ -11,8 +11,7 @@ import { toast } from "sonner";
 
 interface WaitlistFormValues {
   email: string;
-  interests: string[];
-  confirm: boolean;
+  roles: string[];
 }
 
 import { submitToWaitlist } from "../lib/waitlist";
@@ -23,20 +22,18 @@ export default function Waitlist() {
   
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<WaitlistFormValues>({
     defaultValues: {
-      interests: [],
-      confirm: false
+      roles: [],
     }
   });
 
-  const selectedInterests = watch("interests");
-  const isConfirmed = watch("confirm");
+  const selectedRoles = watch("roles");
 
-  const toggleInterest = (interest: string) => {
-    const current = selectedInterests || [];
-    if (current.includes(interest)) {
-      setValue("interests", current.filter(i => i !== interest));
+  const toggleRole = (role: string) => {
+    const current = selectedRoles || [];
+    if (current.includes(role)) {
+      setValue("roles", current.filter(r => r !== role));
     } else {
-      setValue("interests", [...current, interest]);
+      setValue("roles", [...current, role]);
     }
   };
 
@@ -107,7 +104,7 @@ export default function Waitlist() {
             </h1>
             
             <p className="text-lg leading-relaxed" style={{ color: '#5F5E5A' }}>
-              I'm a SEND parent exploring an early-stage, non-clinical digital idea focused on helping families shape more predictability into everyday life. This form helps me understand interest and identify parents who may wish to engage as the idea develops.
+              We're building infrastructure for families who carry more than their share. Your place is reserved.
             </p>
           </div>
 
@@ -134,21 +131,21 @@ export default function Waitlist() {
 
             <div className="space-y-6">
               <Label className="text-lg font-semibold block" style={{ color: '#04342C' }}>
-                Which of the following best describes your interest? <span className="text-sm font-normal text-slate-400">(Select all that apply)</span>
+                Who are you coordinating care for? <span className="text-red-500">*</span> <span className="text-sm font-normal text-slate-400 block mt-1">(Select all that apply)</span>
               </Label>
               
               <div className="grid gap-4">
                 {[
-                  "I would be interested in early access to a tool like this",
-                  "I would be open to using this if it becomes available",
-                  "I would be happy to share feedback as it develops",
-                  "I would be open to being contacted for further input"
-                ].map((interest) => {
-                  const isChecked = (selectedInterests || []).includes(interest);
+                  "A child or young person with additional needs",
+                  "An older adult",
+                  "Someone with a long-term condition",
+                  "I work with caregiving families professionally"
+                ].map((role) => {
+                  const isChecked = (selectedRoles || []).includes(role);
                   return (
                     <div 
-                      key={interest}
-                      onClick={() => toggleInterest(interest)}
+                      key={role}
+                      onClick={() => toggleRole(role)}
                       className="flex items-start space-x-4 p-5 rounded-2xl border-2 transition-all cursor-pointer hover:bg-slate-50 select-none group"
                       style={{ 
                         borderColor: isChecked ? '#1D9E75' : 'rgba(0,0,0,0.05)',
@@ -163,38 +160,21 @@ export default function Waitlist() {
                         {isChecked && <CheckIcon className="size-3.5 text-white" strokeWidth={3} />}
                       </div>
                       <span className="text-base leading-tight" style={{ color: '#5F5E5A' }}>
-                        {interest}
+                        {role}
                       </span>
                     </div>
                   );
                 })}
               </div>
+              {(selectedRoles || []).length === 0 && <p className="text-sm text-amber-600 mt-2">Please select at least one option.</p>}
             </div>
-
-            <div className="p-6 rounded-2xl bg-amber-50/50 border border-amber-100 flex items-start space-x-4">
-              <Checkbox 
-                id="confirm" 
-                checked={isConfirmed}
-                onCheckedChange={(checked) => setValue("confirm", !!checked)}
-                className="mt-1 border-2 data-[state=checked]:bg-[#D85A30] data-[state=checked]:border-[#D85A30]"
-              />
-              <div className="space-y-1">
-                <label htmlFor="confirm" className="text-base font-medium cursor-pointer leading-tight select-none" style={{ color: '#04342C' }}>
-                  Please confirm the following: <span className="text-red-500">*</span>
-                </label>
-                <p className="text-sm" style={{ color: '#5F5E5A' }}>
-                  I am expressing interest in engaging with this early-stage idea as it develops
-                </p>
-              </div>
-            </div>
-            {errors.confirm && <p className="text-sm text-red-500">This confirmation is required.</p>}
 
             <Button
               type="submit"
-              disabled={isLoading || !isConfirmed}
+              disabled={isLoading || (selectedRoles || []).length === 0}
               className="w-full h-20 rounded-[30px] text-xl font-bold flex items-center justify-center gap-3 shadow-xl transition-all"
               style={{ 
-                backgroundColor: isConfirmed ? '#D85A30' : '#E5E7EB', 
+                backgroundColor: (selectedRoles || []).length > 0 ? '#D85A30' : '#E5E7EB', 
                 color: '#ffffff'
               }}
             >
