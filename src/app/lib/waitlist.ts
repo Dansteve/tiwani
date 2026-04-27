@@ -14,7 +14,7 @@
  * 5. Paste the Web App URL in the ENDPOINT variable below.
  */
 
-const WAITLIST_ENDPOINT = "REDACTED_WAITLIST_ENDPOINT"; 
+const WAITLIST_ENDPOINT = import.meta.env.VITE_WAITLIST_ENDPOINT as string | undefined;
 
 export async function submitToWaitlist(data: {
   email: string;
